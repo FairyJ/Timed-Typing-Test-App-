@@ -3,7 +3,8 @@ const testArea = document.querySelector("#test-area");
 const originText = document.querySelector("#origin-text p").innerHTML;
 const resetButton = document.querySelector("#reset");
 const theTimer = document.querySelector(".timer");
-
+const textArray = document.querySelector(".text");
+const topScores = document.querySelector(".topScores");
 var timer;
 //we need to store our min,sec and hundred thousand in different variable so we use array
 var myTimer = [0, 0, 0, 0];
@@ -11,11 +12,27 @@ var myTimer = [0, 0, 0, 0];
 var timeInterval;
 //originally timer is not running
 var timerRunning = false;
+//will store error variable in erro to count users error
+var error = 0;
+//we need to store the top 5 score
+var scores = new Array();
+var text = [
+  { text: "hello" },
+  { text: "how are you" },
+  // { text: "First, solve the problem. Then, write the code." },
+  { text: "Java is to JavaScript what car is to Carpet." },
+  { text: "Knowledge is power." },
+  { text: "Simplicity is the soul of efficiency." },
+  { text: "Make it work, make it right, make it fast." },
+  {
+    text:
+      "The question of whether a computer can think is no more interesting than the question of whether a submarine can swim."
+  }
+];
+var topFives;
+
 // Add leading zero to numbers 9 or below (purely for aesthetics):
 //when our timer hit 9 we need to change it to 10 here we use string we will add string 0 to our timer. js will treat this string 0 as integer .
-var error = 0;
-//we will have variable for which key was pressed
-
 function leadingZero(t) {
   if (t <= 9) {
     t = "0" + t;
@@ -25,7 +42,7 @@ function leadingZero(t) {
 
 // Run a standard minute/second/hundredths timer:
 
-function startMyTimer() {
+function startTimer() {
   //we need to keep track of the time so we create some variable
   //every time startMyTimer runs  we pass each value to leadingZero function and get string as return
   timer =
@@ -64,8 +81,9 @@ function checkInput() {
   if (textEntered == originText) {
     testWrapper.style.borderColor = "#429890";
     window.alert(
-      "Great job! you finish it in : " + timer + " you had " + error + " errors"
+      "Great job! you finished it, You had " + error + " errors"
     );
+    topFiveRecord(timer);
     clearInterval(timeInterval);
   } else {
     if (textEntered == originalTextMatch) {
@@ -79,10 +97,10 @@ function checkInput() {
 }
 
 // Start the timer:
-function startTimer() {
+function start() {
   //use textLength property to the length and know when to start the timer after enter(keydown) the first word textLength will be 1
   //used console.dir to see all properties of this object
-  // console.dir(startTimer);
+  // console.dir(start);
   let textEnteredLength = testArea.textLength;
   //just check and see what is output
   // console.log(textEnteredLength);
@@ -92,7 +110,7 @@ function startTimer() {
     timerRunning = true;
     //use seInterval to start interval , as soon as the length is 1 this function will start running the function.
     //run this startMyTimer function every 1000 s.
-    timeInterval = setInterval(startMyTimer, 10);
+    timeInterval = setInterval(startTimer, 10);
   }
 }
 
@@ -107,29 +125,41 @@ function reset() {
   myTimer = [0, 0, 0, 0];
   //make timerRunning to false to make it ready for next start point
   timerRunning = false;
-
   //we need to set the front to be zero too
   theTimer.innerHTML = "00:00:00";
+  // console.log(originText);
+
   //change our border color to normal
   testWrapper.style.borderColor = "gray";
+  //will give alert to user and print number of error and their top five score
+  window.alert ("your highest scores are : " + topFives );
 }
 
-
+function topFiveRecord(timer) {
+  // console.log(scores);
+  //push the time to our array
+  scores.push(timer);
+ //sort the array of score
+  scores.sort();
+  //get the top five and store in topFive variable to be able to print it out
+  topFives = scores.slice(0, 5);
+  // console.log(topFives);
+  
+}
 
 // Event listeners for keyboard input and the reset button:
 //when user type the first word we want to start our timer so the eventListener type will be keypress
-testArea.addEventListener("keypress", startTimer, false);
+testArea.addEventListener("keypress", start, false);
 //when we leave the keyboard (keyup) we need to check the words user type
 testArea.addEventListener("keyup", checkInput, false);
 //when click event happen when clear all texted in the testArea
 resetButton.addEventListener("click", reset, false);
-
+//when press down key if is delete will count the as error which user deleted
 testArea.addEventListener("keydown", function() {
   var key = event.keyCode;
   // console.dir(key);
   //if the key pressed cose is 8 or 27 will count as error or mistake that user made so count as error.
   if (key == 8 || key == 27) {
-    
     return error++;
   }
 });
