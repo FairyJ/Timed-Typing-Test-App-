@@ -3,8 +3,12 @@ const testArea = document.querySelector("#test-area");
 const originText = document.querySelector("#origin-text p").innerHTML;
 const resetButton = document.querySelector("#reset");
 const theTimer = document.querySelector(".timer");
-const textArray = document.querySelector(".text");
 const topScores = document.querySelector(".topScores");
+const newText = document.querySelector(".text");
+
+
+
+
 var timer;
 //we need to store our min,sec and hundred thousand in different variable so we use array
 var myTimer = [0, 0, 0, 0];
@@ -16,6 +20,7 @@ var timerRunning = false;
 var error = 0;
 //we need to store the top 5 score
 var scores = new Array();
+var topFives;
 var text = [
   { text: "hello" },
   { text: "how are you" },
@@ -29,7 +34,7 @@ var text = [
       "The question of whether a computer can think is no more interesting than the question of whether a submarine can swim."
   }
 ];
-var topFives;
+
 
 // Add leading zero to numbers 9 or below (purely for aesthetics):
 //when our timer hit 9 we need to change it to 10 here we use string we will add string 0 to our timer. js will treat this string 0 as integer .
@@ -131,8 +136,11 @@ function reset() {
 
   //change our border color to normal
   testWrapper.style.borderColor = "gray";
-  //will give alert to user and print number of error and their top five score
-  window.alert ("your highest scores are : " + topFives );
+  if(topFives.length !== 0 ){
+    //will give alert to user and print number of error and their top five score
+    window.alert ("your highest scores are : " + topFives );
+  }
+  
 }
 
 function topFiveRecord(timer) {
@@ -143,9 +151,14 @@ function topFiveRecord(timer) {
   scores.sort();
   //get the top five and store in topFive variable to be able to print it out
   topFives = scores.slice(0, 5);
-  // console.log(topFives);
+  console.log(topFives);
   
 }
+//this function will pass text from array of text to our screen
+ 
+// function textCreater(){
+//   originText.innerHTML = text[Math.floor(Math.random() * text.length)];
+// }
 
 // Event listeners for keyboard input and the reset button:
 //when user type the first word we want to start our timer so the eventListener type will be keypress
@@ -163,6 +176,9 @@ testArea.addEventListener("keydown", function() {
     return error++;
   }
 });
+
+//to change the text in the text area each time user push change text button will get new world
+// newText.addEventListener("click" , textCreator , false);
 
 // watched Linkedin learning and learn all of these stuff from there
 // <q></q>
